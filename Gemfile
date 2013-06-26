@@ -31,7 +31,7 @@ gem 'rack-cors', '0.2.8', :require => 'rack/cors'
 
 # Database
 
-ENV['DB'] ||= 'mysql'
+ENV['DB'] ||= 'postgres'
 
 gem 'mysql2', '0.3.11' if ENV['DB'] == 'all' || ENV['DB'] == 'mysql'
 gem 'pg',     '0.15.1' if ENV['DB'] == 'all' || ENV['DB'] == 'postgres'
