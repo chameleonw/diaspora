@@ -5,6 +5,10 @@
 require 'sidekiq/web'
 
 Diaspora::Application.routes.draw do
+  resources :recommendations
+  get 'recommendations' => 'recommendations#index'
+
+
   if Rails.env.production?
     mount RailsAdmin::Engine => '/admin_panel', :as => 'rails_admin'
   end

@@ -1,0 +1,22 @@
+= form_for @recommendation do |f|
+  - if @recommendation.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@recommendation.errors.count, "error")} prohibited this recommendation from being saved:"
+      %ul
+        - @recommendation.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :author_id
+    = f.number_field :author_id
+  .field
+    = f.label :recipient_id
+    = f.number_field :recipient_id
+  .field
+    = f.label :user_handle
+    = f.text_field :user_handle
+  .field
+    = f.label :rating
+    = f.text_field :rating
+  .actions
+    = f.submit 'Save'
