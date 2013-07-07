@@ -13,12 +13,12 @@ class Recommendation < ActiveRecord::Base
   xml_attr :rating # the rating of the recommended handle
 
 
-  has_one :recipient, :class_name => 'Person'
+  belongs_to :recipient, :class_name => 'Person'
   belongs_to :author, :class_name => 'Person'
 
 
   def recipients
-    self.recipient
+    [] << self.recipient
   end
 
 
@@ -44,8 +44,8 @@ class Recommendation < ActiveRecord::Base
 =end
 
   def subscribers(user)
-    #self.recipients
-    Person.where(id: 1)
+    self.recipients
+    #Person.where(id: 1)
   end
 
   def receive(user, person)
