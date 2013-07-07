@@ -40,6 +40,17 @@ class Proposal < ActiveRecord::Base
   end
 
 
+  def subscribers(user)
+    self.recommendation.recipients
+  end
+
+  def receive(user, person)
+    logger.debug "-------------------------------------About to receive a proposal-----------------------------------------"
+    Proposal.find_or_create_by_guid(self.attributes)
+    end
+
+  end
+ 
   def public?
     false
   end

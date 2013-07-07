@@ -52,17 +52,15 @@ class Recommendation < ActiveRecord::Base
 
   def subscribers(user)
     self.recipients
-    #Person.where(id: 1)
   end
 
   def receive(user, person)
     logger.debug "-------------------------------------About to receive a recommendation-----------------------------------------"
     rec = Recommendation.find_or_create_by_guid(self.attributes)
 
-    self.proposals.each do |proposal|
-      proposal.conversation_id = cnv.id
-      proposal.receive(user, person)
-      #Notification.notify(user, received_proposal, person) if proposal.respond_to?(:notification_type)
+    self.proposals.each do |prop|
+      prop.recommendation_id = rec.id
+      prop.receive(user, person)
     end
 
   end
