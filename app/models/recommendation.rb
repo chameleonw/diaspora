@@ -49,6 +49,7 @@ class Recommendation < ActiveRecord::Base
   end
 
   def receive(user, person)
+    logger.debug "-------------------------------------About to receive a recommendation-----------------------------------------"
     Recommendation.find_or_create_by_guid(self.attributes)
   end
  
