@@ -38,7 +38,7 @@ class Recommendation < ActiveRecord::Base
   end
 =end
   def recipient_handle= handle
-    self.recipient << Webfinger.new(handle).fetch
+    self.recipient = Webfinger.new(handle).fetch
     
   end
 
