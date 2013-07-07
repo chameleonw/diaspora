@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Recommendation:
+  = @proposal.recommendation_id
+%p
+  %b Handle:
+  = @proposal.handle
+%p
+  %b Rating:
+  = @proposal.rating
+%p
+  %b Guid:
+  = @proposal.guid
+
+= link_to 'Edit', edit_proposal_path(@proposal)
+\|
+= link_to 'Back', proposals_path

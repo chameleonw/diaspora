@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 
+# haml view generation
+gem 'haml-rails'
+
 # Appserver
 
 gem 'unicorn', '4.6.2', :require => false

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130429073928) do
+ActiveRecord::Schema.define(:version => 20130707151405) do
 
   create_table "account_deletions", :force => true do |t|
     t.string  "diaspora_handle"
@@ -107,8 +107,6 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
     t.datetime "updated_at", :null => false
   end
 
-  add_index "conversations", ["author_id"], :name => "conversations_author_id_fk"
-
   create_table "invitation_codes", :force => true do |t|
     t.string   "token"
     t.integer  "user_id"
@@ -146,7 +144,6 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
     t.string   "target_type",             :limit => 60,                   :null => false
   end
 
-  add_index "likes", ["author_id"], :name => "likes_author_id_fk"
   add_index "likes", ["guid"], :name => "index_likes_on_guid", :unique => true
   add_index "likes", ["target_id", "author_id", "target_type"], :name => "index_likes_on_target_id_and_author_id_and_target_type", :unique => true
   add_index "likes", ["target_id"], :name => "index_likes_on_post_id"
@@ -181,7 +178,6 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
   end
 
   add_index "messages", ["author_id"], :name => "index_messages_on_author_id"
-  add_index "messages", ["conversation_id"], :name => "messages_conversation_id_fk"
 
   create_table "notification_actors", :force => true do |t|
     t.integer  "notification_id"
@@ -213,7 +209,7 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
     t.text   "data",                 :null => false
   end
 
-  add_index "o_embed_caches", ["url"], :name => "index_o_embed_caches_on_url", :length => {"url"=>255}
+  add_index "o_embed_caches", ["url"], :name => "index_o_embed_caches_on_url"
 
   create_table "participations", :force => true do |t|
     t.string   "guid"
@@ -343,6 +339,15 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
   add_index "profiles", ["full_name"], :name => "index_profiles_on_full_name"
   add_index "profiles", ["person_id"], :name => "index_profiles_on_person_id"
 
+  create_table "proposals", :force => true do |t|
+    t.integer  "recommendation_id"
+    t.string   "handle"
+    t.decimal  "rating"
+    t.string   "guid"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
   create_table "rails_admin_histories", :force => true do |t|
     t.text     "message"
     t.string   "username"
@@ -355,6 +360,14 @@ ActiveRecord::Schema.define(:version => 20130429073928) do
   end
 
   add_index "rails_admin_histories", ["item", "table", "month", "year"], :name => "index_rails_admin_histories"
+
+  create_table "recommendations", :force => true do |t|
+    t.integer  "author_id"
+    t.integer  "recipient_id"
+    t.string   "guid"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "roles", :force => true do |t|
     t.integer  "person_id"

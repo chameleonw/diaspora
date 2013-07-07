@@ -1,0 +1,24 @@
+= form_for @proposal do |f|
+  - if @proposal.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@proposal.errors.count, "error")} prohibited this proposal from being saved:"
+      %ul
+        - @proposal.errors.full_messages.each do |msg|
+          %li= msg
+
+
+
+  .field
+    = f.label :recommendation_id
+    = f.number_field :recommendation_id
+  .field
+    = f.label :handle
+    = f.text_field :handle
+  .field
+    = f.label :rating
+    = f.text_field :rating
+  .field
+    = f.label :guid
+    = f.text_field :guid
+  .actions
+    = f.submit 'Save'

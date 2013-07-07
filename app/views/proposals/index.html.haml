@@ -1,0 +1,25 @@
+%h1 Listing proposals
+
+%table
+  %tr
+    %th Recommendation
+    %th Handle
+    %th Rating
+    %th Guid
+    %th
+    %th
+    %th
+
+  - @proposals.each do |proposal|
+    %tr
+      %td= proposal.recommendation_id
+      %td= proposal.handle
+      %td= proposal.rating
+      %td= proposal.guid
+      %td= link_to 'Show', proposal
+      %td= link_to 'Edit', edit_proposal_path(proposal)
+      %td= link_to 'Destroy', proposal, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Proposal', new_proposal_path
