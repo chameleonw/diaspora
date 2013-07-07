@@ -31,12 +31,12 @@ class Recommendation < ActiveRecord::Base
     self.author = Webfinger.new(nh).fetch
   end
 
-=begin
+
 # The recipients handle
   def recipient_handle
     self.recipient.diaspora_handle
   end
-=end
+  
   def recipient_handle= handle
     self.recipient = Webfinger.new(handle).fetch
     
