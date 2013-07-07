@@ -36,12 +36,12 @@ class Recommendation < ActiveRecord::Base
   def recipient_handle
     self.recipient.diaspora_handle
   end
-
+=end
   def recipient_handle= handle
     self.recipient << Webfinger.new(handle).fetch
     
   end
-=end
+
 
   def subscribers(user)
     self.recipients
