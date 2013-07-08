@@ -25,7 +25,9 @@ class RecommendationsController < ApplicationController
   # GET /recommendations/new.json
   def new
     @recommendation = Recommendation.new
-
+    3.times do
+      @recommendation.proposals.build
+    end
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @recommendation }
@@ -44,6 +46,7 @@ class RecommendationsController < ApplicationController
 
     respond_to do |format|
       if @recommendation.save
+        Postzord::Dispatcher.build(current_user, @recommendation).post
         format.html { redirect_to @recommendation, notice: 'Recommendation was successfully created.' }
         format.json { render json: @recommendation, status: :created, location: @recommendation }
       else

@@ -47,8 +47,6 @@ class Proposal < ActiveRecord::Base
   def receive(user, person)
     logger.debug "-------------------------------------About to receive a proposal-----------------------------------------"
     Proposal.find_or_create_by_guid(self.attributes)
-    end
-
   end
  
   def public?
