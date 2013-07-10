@@ -16,6 +16,11 @@ class Proposal < ActiveRecord::Base
 
   belongs_to :recommendation, :touch => true
 
+
+  def person
+  	Webfinger.new(handle).fetch
+  end
+
   def conversation_guid
     self.recommendation.guid
   end

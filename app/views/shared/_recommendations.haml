@@ -1,0 +1,9 @@
+-#   Copyright (c) 2013, Friedhelm Victor.
+
+%table 
+  - Recommendation.where(recipient_id: current_user.id).first.proposals.each do |proposal|
+    %tr
+      %td
+        %img{src: proposal.person.profile.image_url, width: 50}
+      %td= proposal.person.name
+      %td= proposal.person.profile.tag_string
