@@ -18,7 +18,11 @@ class Proposal < ActiveRecord::Base
 
 
   def person
-  	Webfinger.new(handle).fetch
+    begin
+  	  Webfinger.new(handle).fetch
+    rescue
+      nil
+    end
   end
 
   def conversation_guid

@@ -17,7 +17,7 @@ class Recommendation < ActiveRecord::Base
   xml_reader :recipient_handle # do we even need this?
   xml_attr :proposals, :as => [Proposal]
 
-  has_many :proposals
+  has_many :proposals, dependent: :destroy
 
   belongs_to :recipient, :class_name => 'Person'
   belongs_to :author, :class_name => 'Person'
