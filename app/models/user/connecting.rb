@@ -25,6 +25,25 @@ module User::Connecting
     
     deliver_profile_update
     register_share_visibilities(contact)
+
+    rs = Recommendation.where(recipient_id: self.person.id)
+    unless rs.empty?
+      rs.each do |recommendation|
+        recommendation.proposals.each do |proposal|
+          if proposal.person.id == person.id then proposal.delete end
+        end
+        if recommendation.proposals.empty? then recommendation.delete end
+      end
+    end
+
+    algo = RecommendationAlgorithm.new(self)
+    unless algo.prioritized_friend_list.empty?
+      max = algo.prioritized_friend_list.count - 1
+      algo.prioritized_friend_list[0..(max>2 ? 2 : max)].each do |friend|
+        algo.send_recommendations_for(friend[:person])
+      end
+    end
+
     contact
   end
 

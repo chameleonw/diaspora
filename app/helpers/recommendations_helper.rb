@@ -8,7 +8,9 @@ module RecommendationsHelper
 
   def compute_from_received
     proposals = RecommendationAlgorithm.new(current_user).compute_from_received
-    proposals.map { |proposal_arr| proposal_arr[0].name } unless proposals.nil?
+    proposals.map { |proposal_arr| proposal_arr[0] } 
+             .select { |person| current_user.contacts.map { |contact| contact.person }.exclude? person } unless proposals.nil?
+
   end
 
   def prioritized_friend_list

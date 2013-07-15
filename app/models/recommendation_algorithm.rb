@@ -22,20 +22,23 @@ class RecommendationAlgorithm
     		                 :shared_tag_count => shared_tag_count(@current_user.person, person) } )
     end
     
-    # Computing reference data
-    highest_interaction = priority_array.sort_by { |k| -k[:interactions] }.first[:interactions]
-    highest_mutual_friends_count = priority_array.sort_by { |k| -k[:mutual_friend_count] }.first[:mutual_friend_count]
-    highest_shared_tag_count = priority_array.sort_by { |k| -k[:shared_tag_count] }.first[:shared_tag_count]
+    
+    unless priority_array.empty?
+      # Computing reference data
+      highest_interaction = priority_array.sort_by { |k| -k[:interactions] }.first[:interactions]
+      highest_mutual_friends_count = priority_array.sort_by { |k| -k[:mutual_friend_count] }.first[:mutual_friend_count]
+      highest_shared_tag_count = priority_array.sort_by { |k| -k[:shared_tag_count] }.first[:shared_tag_count]
 
-    # Computing individual rankings
-	priority_array.each do |hash|
-	  hash[:interaction_rating] = hash[:interactions].to_f / (highest_interaction == 0 ? 1 : highest_interaction)
-	  hash[:mutual_friend_rating] = hash[:mutual_friend_count].to_f / (highest_mutual_friends_count == 0 ? 1 : highest_mutual_friends_count)
-	  hash[:shared_tag_rating] = hash[:shared_tag_count].to_f / (highest_shared_tag_count == 0 ? 1 : highest_shared_tag_count)
+      # Computing individual rankings
+  	  priority_array.each do |hash|
+    	  hash[:interaction_rating] = hash[:interactions].to_f / (highest_interaction == 0 ? 1 : highest_interaction)
+    	  hash[:mutual_friend_rating] = hash[:mutual_friend_count].to_f / (highest_mutual_friends_count == 0 ? 1 : highest_mutual_friends_count)
+    	  hash[:shared_tag_rating] = hash[:shared_tag_count].to_f / (highest_shared_tag_count == 0 ? 1 : highest_shared_tag_count)
 
-	  # computing the final priority rating TODO: remove magic numbers
-	  hash[:rating] = 0.5 * hash[:interaction_rating] + 0.3 * hash[:mutual_friend_rating] + 0.2 * hash[:shared_tag_rating]
-	end
+  	    # computing the final priority rating TODO: remove magic numbers
+  	    hash[:rating] = 0.5 * hash[:interaction_rating] + 0.3 * hash[:mutual_friend_rating] + 0.2 * hash[:shared_tag_rating]
+  	  end
+    end
 
 	priority_array.sort_by { |k| -k[:rating] }
   end
@@ -51,36 +54,38 @@ class RecommendationAlgorithm
     		                 :shared_tag_count => shared_tag_count(person, referral) } )
     end
 
-    # Computing reference data
-    highest_combined_interaction = recommendation_array.sort_by { |k| -k[:combined_interaction] }.first[:combined_interaction]
-    highest_path_count = recommendation_array.sort_by { |k| -k[:path_count] }.first[:path_count]
-    highest_shared_tag_count = recommendation_array.sort_by { |k| -k[:shared_tag_count] }.first[:shared_tag_count]
+    unless recommendation_array.empty?
+      # Computing reference data
+      highest_combined_interaction = recommendation_array.sort_by { |k| -k[:combined_interaction] }.first[:combined_interaction]
+      highest_path_count = recommendation_array.sort_by { |k| -k[:path_count] }.first[:path_count]
+      highest_shared_tag_count = recommendation_array.sort_by { |k| -k[:shared_tag_count] }.first[:shared_tag_count]
 
 
-    # Computing individual rankings
-	recommendation_array.each do |hash|
-	  hash[:interaction_rating] = hash[:combined_interaction].to_f / (highest_combined_interaction == 0 ? 1 : highest_combined_interaction)
-	  hash[:path_count_rating] = hash[:path_count].to_f / (highest_path_count == 0 ? 1 : highest_path_count)
-	  hash[:shared_tag_rating] = hash[:shared_tag_count].to_f / (highest_shared_tag_count == 0 ? 1 : highest_shared_tag_count)
+      # Computing individual rankings
+	    recommendation_array.each do |hash|
+    	  hash[:interaction_rating] = hash[:combined_interaction].to_f / (highest_combined_interaction == 0 ? 1 : highest_combined_interaction)
+    	  hash[:path_count_rating] = hash[:path_count].to_f / (highest_path_count == 0 ? 1 : highest_path_count)
+    	  hash[:shared_tag_rating] = hash[:shared_tag_count].to_f / (highest_shared_tag_count == 0 ? 1 : highest_shared_tag_count)
 
-	  # computing the final priority rating TODO: remove magic numbers
-	  hash[:rating] = 0.25 * hash[:interaction_rating] + 0.35 * hash[:path_count] + 0.4 * hash[:shared_tag_rating]
-	end
-	recommendation_array.sort_by { |k| -k[:rating] }
+    	  # computing the final priority rating TODO: remove magic numbers
+    	  hash[:rating] = 0.25 * hash[:interaction_rating] + 0.35 * hash[:path_count] + 0.4 * hash[:shared_tag_rating]
+    	end
+    	recommendation_array.sort_by { |k| -k[:rating] }
 
-    recommendation = Recommendation.new(author_id: @current_user.person.id, recipient_id: referral.id)
-    recommendation_array.first(3).each do |ext_person_hash|
-    	recommendation.proposals.build(handle: ext_person_hash[:person].diaspora_handle, rating: ext_person_hash[:rating])
-    end
+      recommendation = Recommendation.new(author_id: @current_user.person.id, recipient_id: referral.id)
+      recommendation_array.first(3).each do |ext_person_hash|
+    	  recommendation.proposals.build(handle: ext_person_hash[:person].diaspora_handle, rating: ext_person_hash[:rating])
+      end
 
-    if recommendation.save
-      Postzord::Dispatcher.build(@current_user, recommendation).post
+      if recommendation.save
+        Postzord::Dispatcher.build(@current_user, recommendation).post
+      end
     end
   end
 
   # should compute the resulting recommendations based on received ratings and friend priorities
   def compute_from_received
-  	result = Array.new()
+  	intermediate = Array.new()
   	my_recommendations = Recommendation.where(recipient_id: @current_user.person.id)
   	unless my_recommendations.empty?
       my_recommendations.each do |recommendation|
@@ -90,13 +95,13 @@ class RecommendationAlgorithm
 
           # received handle could not be converted to a person? or recommender is not our friend?
           unless (proposal_person.nil? || recommender.nil?)
-            result.push({:person => proposal_person,
+            intermediate.push({:person => proposal_person,
                          :rating => proposal.rating * recommender[:rating] }) 
           end
         end
       end
     end
-    result.each_with_object(Hash.new(0)) { |o, h| h[o[:person]] += o[:rating] }.sort_by{|k,v| -v}
+    result = intermediate.each_with_object(Hash.new(0)) { |o, h| h[o[:person]] += o[:rating] }.sort_by{|k,v| -v}
   end
   #------------------------------------------------------------------------------------------------------------------------
 

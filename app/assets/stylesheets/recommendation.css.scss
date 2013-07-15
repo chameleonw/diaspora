@@ -1,0 +1,19 @@
+@import '_mixins.css.scss';
+
+.recommendation-table {
+	.recommendation-row {
+		
+		h6.author {
+			margin-bottom:5px;
+			font-size: 1.2em;
+		}
+
+		.description-action {
+			vertical-align: top;
+		}
+
+		border-bottom: 1px solid #DDDDDD;
+	}
+	border-collapse: collapse;
+}
+

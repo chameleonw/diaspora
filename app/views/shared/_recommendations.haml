@@ -10,7 +10,17 @@
 -#      %td= proposal.person.profile.tag_string
 
 
-%p="Sending first Recommendations for #{current_user.contacts.first.person.name}"
+-#%p="Sending first Recommendations for #{current_user.contacts.first.person.name}"
 -#%p=send_recommendations_for_first
 -#%strong="#{current_user.contacts.first.person.name}'s kontakte"
-%p=compute_from_received
+%table.recommendation-table
+  -compute_from_received.each do |person|
+    %tr.recommendation-row
+      %td.profile-picture
+        =person_image_link(person)
+      %td.description-action
+        %h6.author=person_link(person)
+        =render :partial => 'people/relationship_action',
+                :locals => { :person => person, :contact => current_user.contacts.find_by_person_id(person.id),
+                             :current_user => current_user }
+

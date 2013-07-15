@@ -5,6 +5,7 @@
 *= require mentions
 *= require tags
 *= require hovercard
+*= require recommendation
 
 *= require vendor/interim-bootstrap
 *= require vendor/facebox
