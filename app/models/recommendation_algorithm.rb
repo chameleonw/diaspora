@@ -40,7 +40,7 @@ class RecommendationAlgorithm
   	  end
     end
 
-	priority_array.sort_by { |k| -k[:rating] }
+	  priority_array.sort_by { |k| -k[:rating] }
   end
 
   # should compute and send recommendations to a specified contact - make sure it's a contact!!!!
@@ -50,7 +50,7 @@ class RecommendationAlgorithm
     possible_contacts.each do |person|
       recommendation_array.push( { :person => person,
     		                 :combined_interaction => interaction_count(person) + interaction_count(referral),
-    		                 :path_count => 1,
+    		                 :path_count => mutual_friend_count(person, referral),
     		                 :shared_tag_count => shared_tag_count(person, referral) } )
     end
 
@@ -134,7 +134,6 @@ class RecommendationAlgorithm
       	    .merge(author_occurance_current_user_commented_on
       	      .merge(author_comment_occurance_on_current_users_posts) {|key,val1,val2| val1+val2}) {|key,val1,val2| val1+val2}) {|key,val1,val2| val1+val2}
   end
-
   
 
   #----------------------------------------------------------
